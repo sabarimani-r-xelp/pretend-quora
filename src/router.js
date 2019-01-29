@@ -12,8 +12,12 @@ import {
 } from "./routes/users";
 import {
   list as listQuestionsRoute,
+  questionsWithAnswer,
   create as createQuestionRoute
 } from "./routes/questions";
+
+import { create as createAnswers } from "./routes/answers";
+
 import {
   authenticate as authenticateRoute,
   verify as verifySessionMiddleware
@@ -66,6 +70,8 @@ export default function createRouter() {
   router.post("/api/users", createUserRoute);
 
   router.get("/api/questions", listQuestionsRoute);
+  router.get("/api/questionsWithAnswer", questionsWithAnswer);
+  router.post("/api/answers", createAnswers);
   router.post("/api/questions", createQuestionRoute);
 
   // ******************

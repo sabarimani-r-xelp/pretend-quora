@@ -1,25 +1,25 @@
 const DB = require("./db.js");
 
-console.log(DB);
-
 export class questionsDB {
-  list = async () => {
+  list = async id => {
     try {
       var results = DB.query(
-        "SELECT id, name, (select first_name FROM users WHERE id = userid) askedBy FROM questions WHERE active_flag = 1 ORDER BY createdon DESC"
+        "SELECT id, (select first_name FROM users WHERE id = userid) askedBy FROM questions WHERE active_flag = 1 " +
+          (id ? "AND id = " + id : "") +
+          " ORDER BY createdon DESC"
       );
+      console.log(results);
       return results;
     } catch (error) {
       throw error;
     }
   };
 
-  create = (name, userid) => {
+  create = (question, userid) => {
     try {
-      var resutls = [];
       var response = DB.query(
-        "INSERT INTO questions SET name = '" +
-          name +
+        "INSERT INTO questions SET id = '" +
+          question +
           "', userid = " +
           userid +
           ", active_flag = 1, createdon = NOW();"

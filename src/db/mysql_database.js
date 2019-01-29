@@ -3,7 +3,7 @@ var db = mysql.createConnection({
   host: "localhost",
   user: "root",
   password: "",
-  database: "users"
+  database: "db_quora"
 });
 db.connect();
 
