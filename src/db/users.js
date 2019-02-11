@@ -32,6 +32,7 @@ export class UsersDB {
     const user = await this.getUserById(id, false);
     if (!user) {
       return null;
+      return;
     }
 
     if (await comparePassword(password, user.passwordHash)) {
