@@ -13,10 +13,14 @@ import {
 import {
   list as listQuestionsRoute,
   questionsWithAnswer,
-  create as createQuestionRoute
+  create as createQuestionRoute,
+  update as UpdateQuestion
 } from "./routes/questions";
 
-import { create as createAnswers } from "./routes/answers";
+import {
+  create as createAnswer,
+  update as updateAnswer
+} from "./routes/answers";
 
 import {
   authenticate as authenticateRoute,
@@ -69,10 +73,13 @@ export default function createRouter() {
   router.get("/api/users", verifySessionMiddleware, listUsersRoute);
   router.post("/api/users", createUserRoute);
 
-  router.get("/api/questions", listQuestionsRoute);
-  router.get("/api/questionsWithAnswer", questionsWithAnswer);
-  router.post("/api/answers", createAnswers);
   router.post("/api/questions", createQuestionRoute);
+  router.get("/api/questions/", listQuestionsRoute);
+  router.get("/api/questions/:id", listQuestionsRoute);
+  router.put("/api/questions/:id", UpdateQuestion);
+  router.get("/api/questions/:QuestionId/answers", questionsWithAnswer);
+  router.post("/api/questions/:QuestionId/answers", createAnswer);
+  router.put("/api/questions/:QuestionId/answers/:AnswerId", updateAnswer);
 
   // ******************
   // * ERROR HANDLING *
