@@ -1,49 +1,74 @@
 import DB from "../db/db.js";
+import { sequelize } from "../db/Sequelize";
+import { Answers } from "../schema/AnswersSchema";
 
-export class answerDB {
-  list = async (id, answerId = null) => {
+export class AnswerModel {
+  list = async (QuestionId, AnswerId = null) => {
     try {
-      console.log(answerId);
+      let QueryConditions = [{ active_flag: 1 }];
+      if (QuestionId) QueryConditions.push({ question_id: QuestionId });
+      if (AnswerId) QueryConditions.push({ id: AnswerId });
 
-      var results = DB.query(
-        "SELECT id, answer, (select first_name FROM users WHERE id = userid) answeredBy FROM answers WHERE active_flag = 1 " +
-          (id ? " AND question_id = " + id : "") +
-          (answerId ? " AND id = " + answerId : "") +
-          " ORDER BY createdon DESC"
-      );
-      return results;
+      return await Answers.findAll({
+        raw: true,
+        attributes: [
+          "id",
+          "answer",
+          "createdon",
+          [
+            sequelize.literal(
+              "(select first_name FROM users WHERE id = userid)"
+            ),
+            "answeredBy"
+          ]
+        ],
+        where: QueryConditions,
+        order: [["createdon", "desc"]]
+      }).then(rows => {
+        return rows;
+      });
     } catch (error) {
       throw error;
     }
   };
 
-  create = async (answer, userid, questionid, AnswerId = null) => {
+  create = async (answer, userId, questionid) => {
     try {
-      var resutls = [];
-      var response = await DB.query(
-        "INSERT INTO answers SET id = " +
-          AnswerId +
-          ", answer = '" +
-          answer +
-          "', userid = " +
-          userid +
-          ", question_id = " +
-          questionid +
-          ", active_flag = 1, createdon = NOW() ON DUPLICATE KEY UPDATE id = " +
-          AnswerId +
-          ", answer = '" +
-          answer +
-          "', userid = " +
-          userid +
-          ", question_id = " +
-          questionid +
-          ", active_flag = 1;"
-      );
-      return this.list(null, response.insertId);
+      return await Answers.create({
+        question_id: questionid,
+        answer: answer,
+        userid: userId,
+        active_flag: 1,
+        createdon: sequelize.fn("NOW")
+      }).then(result => {
+        return result;
+      });
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  update = async (answer, userId, questionid, AnswerId) => {
+    try {
+      return await Answers.update(
+        {
+          question_id: questionid,
+          answer: answer,
+          userid: userId,
+          active_flag: 1
+        },
+        {
+          where: {
+            id: AnswerId
+          }
+        }
+      ).then(result => {
+        return result;
+      });
     } catch (error) {
       throw error;
     }
   };
 }
 
-export default new answerDB();
+export default new AnswerModel();

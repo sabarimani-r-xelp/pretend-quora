@@ -75,8 +75,8 @@ export default function createRouter() {
 
   router.post("/api/questions", createQuestionRoute);
   router.get("/api/questions/", listQuestionsRoute);
-  router.get("/api/questions/:id", listQuestionsRoute);
-  router.put("/api/questions/:id", UpdateQuestion);
+  router.get("/api/questions/:QuestionId", listQuestionsRoute);
+  router.put("/api/questions/:QuestionId", UpdateQuestion);
   router.get("/api/questions/:QuestionId/answers", questionsWithAnswer);
   router.post("/api/questions/:QuestionId/answers", createAnswer);
   router.put("/api/questions/:QuestionId/answers/:AnswerId", updateAnswer);

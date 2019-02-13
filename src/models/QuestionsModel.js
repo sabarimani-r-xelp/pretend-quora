@@ -1,65 +1,67 @@
-import DB from "../db/db.js";
-var Sequelize = require("sequelize");
-import sequelize from "../db/Sequelize";
-const Questions = sequelize.define(
-  "questions",
-  {
-    id: {
-      type: Sequelize.BIGINT,
-      autoIncrement: true,
-      primaryKey: true
-    },
-    question: {
-      type: Sequelize.STRING
-    },
-    userid: {
-      type: Sequelize.BIGINT
-    },
-    active_flag: {
-      type: Sequelize.TINYINT
-    }
-  },
-  {
-    timestamps: false
-  }
-);
+import { sequelize } from "../db/Sequelize";
+import { Questions } from "../schema/QuestionsSchema";
 
 class QuestionsModel {
   list = async id => {
     try {
-      Questions.findAll().then(question => {
-        console.log(question.dataValues);
+      let results = [];
+      let QueryConditions = [{ active_flag: 1 }];
+      if (id) QueryConditions.push({ id: id });
+
+      await Questions.findAll({
+        raw: true,
+        where: QueryConditions,
+        attributes: [
+          "id",
+          "question",
+          [
+            sequelize.literal(
+              "(select first_name FROM users WHERE id = userid)"
+            ),
+            "askedBy"
+          ],
+          "createdon"
+        ],
+        order: [["createdon", "DESC"]]
+      }).then(question => {
+        results = question;
       });
-      var results = DB.query(
-        "SELECT id,question, (select first_name FROM users WHERE id = userid) askedBy FROM questions WHERE active_flag = 1 " +
-          (id ? "AND id = " + id : "") +
-          " ORDER BY createdon DESC"
-      );
-      console.log(results);
       return results;
     } catch (error) {
       throw error;
     }
   };
 
-  create = async (question, userid, id = null) => {
+  create = async (question, userid) => {
     try {
-      var response = await DB.query(
-        "INSERT INTO questions SET id = '" +
-          id +
-          "', question = '" +
-          question +
-          "', userid = " +
-          userid +
-          ", active_flag = 1, createdon = NOW() ON DUPLICATE KEY UPDATE id = '" +
-          id +
-          "', question = '" +
-          question +
-          "', userid = " +
-          userid +
-          ", active_flag = 1;"
-      );
-      return this.list(response.insertId);
+      return await Questions.create({
+        id: id,
+        question: question,
+        userid: userid,
+        active_flag: 1,
+        createdon: sequelize.fn("NOW")
+      }).then(result => {
+        return result;
+      });
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  update = async (question, userid, id) => {
+    try {
+      return await Questions.update(
+        {
+          question: question,
+          userid: userid,
+          active_flag: 1
+        },
+        {
+          id: id
+        }
+      ).then(result => {
+        return result;
+      });
     } catch (error) {
       throw error;
     }

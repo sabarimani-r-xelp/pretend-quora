@@ -1,6 +1,7 @@
 import { route } from ".";
 import QuestionsModel from "../models/QuestionsModel";
 import AnswerModel from "../models/AnswerModel";
+import { log } from "util";
 
 export const create = route(
   async (req, res) => {
@@ -29,6 +30,6 @@ export const questionsWithAnswer = route(async (req, res) => {
 export const update = route(async (req, res) => {
   var QuestionId = req.params.QuestionId;
   const { question, userId } = req.body.length ? req.body : req.query;
-  const newQues = await QuestionsModel.create(question, userId, QuestionId);
+  const newQues = await QuestionsModel.update(question, userId, QuestionId);
   res.send({ data: newQues });
 });

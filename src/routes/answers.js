@@ -18,7 +18,7 @@ export const update = route(
     const QuestionId = req.params.QuestionId,
       AnswerId = req.params.AnswerId;
     const { answer, userId } = req.body.length ? req.body : req.query;
-    const newQues = await AnswerModel.create(
+    const newQues = await AnswerModel.update(
       answer,
       userId,
       QuestionId,
