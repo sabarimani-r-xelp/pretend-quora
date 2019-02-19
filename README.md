@@ -55,7 +55,7 @@ localhost:3000/api/questions/1/answers
 
 ###### Params:
 
-answer=Use Quora to find the answers of your questions
+answer=Use Quora to find the answers
 
 userId=2
 

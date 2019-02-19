@@ -1,16 +1,15 @@
 import { sequelize } from "../db/Sequelize";
-import { Questions } from "../schema/QuestionsSchema";
+import { questions as Questions } from "../schema/questions";
 
-class QuestionsModel {
-  list = async id => {
+class questionsModel {
+  list = id => {
     try {
-      let results = [];
-      let QueryConditions = [{ active_flag: 1 }];
-      if (id) QueryConditions.push({ id: id });
+      let queryConditions = [{ isActive: true }];
+      if (id) queryConditions.push({ id: id });
 
-      await Questions.findAll({
+      return Questions.findAll({
         raw: true,
-        where: QueryConditions,
+        where: queryConditions,
         attributes: [
           "id",
           "question",
@@ -20,26 +19,22 @@ class QuestionsModel {
             ),
             "askedBy"
           ],
-          "createdon"
+          "createdAt"
         ],
-        order: [["createdon", "DESC"]]
+        order: [["createdAt", "DESC"]]
       }).then(question => {
-        results = question;
+        return question;
       });
-      return results;
     } catch (error) {
       throw error;
     }
   };
 
-  create = async (question, userid) => {
+  create = (question, userid) => {
     try {
-      return await Questions.create({
-        id: id,
+      return Questions.create({
         question: question,
-        userid: userid,
-        active_flag: 1,
-        createdon: sequelize.fn("NOW")
+        userid: userid
       }).then(result => {
         return result;
       });
@@ -48,13 +43,12 @@ class QuestionsModel {
     }
   };
 
-  update = async (question, userid, id) => {
+  update = (question, userid, id) => {
     try {
-      return await Questions.update(
+      return Questions.update(
         {
           question: question,
-          userid: userid,
-          active_flag: 1
+          userid: userid
         },
         {
           id: id
@@ -68,4 +62,4 @@ class QuestionsModel {
   };
 }
 
-export default new QuestionsModel();
+export default new questionsModel();
