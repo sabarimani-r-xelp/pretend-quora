@@ -1,12 +1,12 @@
 import { route } from ".";
-import AnswerModel from "../models/AnswerModel";
+import answersModel from "../models/answers";
 
 export const create = route(
   async (req, res) => {
-    const QuestionId = req.params.QuestionId;
+    const questionId = req.params.questionId;
     const { answer, userId } = req.body.length ? req.body : req.query;
-    const newQues = await AnswerModel.create(answer, userId, QuestionId);
-    res.send({ data: newQues });
+    const newAnswer = await answersModel.create(answer, userId, questionId);
+    res.send({ data: newAnswer });
   },
   {
     requiredFields: ["answer", "userId"]
@@ -15,16 +15,17 @@ export const create = route(
 
 export const update = route(
   async (req, res) => {
-    const QuestionId = req.params.QuestionId,
-      AnswerId = req.params.AnswerId;
-    const { answer, userId } = req.body.length ? req.body : req.query;
-    const newQues = await AnswerModel.update(
+    const questionId = req.params.questionId,
+      answerId = req.params.id,
+      { answer, userId } = req.body.length ? req.body : req.query;
+
+    const updatedData = await answersModel.update(
       answer,
       userId,
-      QuestionId,
-      AnswerId
+      questionId,
+      answerId
     );
-    res.send({ data: newQues });
+    res.send({ data: updatedData });
   },
   {
     requiredFields: ["answer", "userId"]

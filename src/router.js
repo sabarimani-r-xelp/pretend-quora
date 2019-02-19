@@ -14,7 +14,7 @@ import {
   list as listQuestionsRoute,
   questionsWithAnswer,
   create as createQuestionRoute,
-  update as UpdateQuestion
+  update as updateQuestion
 } from "./routes/questions";
 
 import {
@@ -75,11 +75,11 @@ export default function createRouter() {
 
   router.post("/api/questions", createQuestionRoute);
   router.get("/api/questions/", listQuestionsRoute);
-  router.get("/api/questions/:QuestionId", listQuestionsRoute);
-  router.put("/api/questions/:QuestionId", UpdateQuestion);
-  router.get("/api/questions/:QuestionId/answers", questionsWithAnswer);
-  router.post("/api/questions/:QuestionId/answers", createAnswer);
-  router.put("/api/questions/:QuestionId/answers/:AnswerId", updateAnswer);
+  router.get("/api/questions/:id", listQuestionsRoute);
+  router.put("/api/questions/:id", updateQuestion);
+  router.get("/api/questions/:questionId/answers", questionsWithAnswer);
+  router.post("/api/questions/:questionId/answers", createAnswer);
+  router.put("/api/questions/:questionId/answers/:id", updateAnswer);
 
   // ******************
   // * ERROR HANDLING *
