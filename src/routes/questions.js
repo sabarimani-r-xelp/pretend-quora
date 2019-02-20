@@ -21,9 +21,8 @@ export const list = route(async (req, res) => {
 
 export const questionsWithAnswer = route(async (req, res) => {
   let questionId = req.params.questionId;
-  const questions = await questionsModel.list(questionId),
-    answers = await answersModel.list(questionId);
-  res.send({ data: questions, answers: answers });
+  const questions = await questionsModel.list(questionId, true);
+  res.send({ data: questions });
 });
 
 export const update = route(async (req, res) => {
