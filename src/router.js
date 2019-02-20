@@ -12,7 +12,7 @@ import {
 } from "./routes/users";
 import {
   list as listQuestionsRoute,
-  questionsWithAnswer,
+  answers,
   create as createQuestionRoute,
   update as updateQuestion
 } from "./routes/questions";
@@ -77,7 +77,7 @@ export default function createRouter() {
   router.get("/api/questions/", listQuestionsRoute);
   router.get("/api/questions/:id", listQuestionsRoute);
   router.put("/api/questions/:id", updateQuestion);
-  router.get("/api/questions/:questionId/answers", questionsWithAnswer);
+  router.get("/api/questions/:questionId/answers", answers);
   router.post("/api/questions/:questionId/answers", createAnswer);
   router.put("/api/questions/:questionId/answers/:id", updateAnswer);
 

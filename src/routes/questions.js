@@ -1,6 +1,5 @@
 import { route } from ".";
 import questionsModel from "../models/questions";
-import answersModel from "../models/answers";
 
 export const create = route(
   async (req, res) => {
@@ -19,7 +18,7 @@ export const list = route(async (req, res) => {
   res.send({ data: questions });
 });
 
-export const questionsWithAnswer = route(async (req, res) => {
+export const answers = route(async (req, res) => {
   let questionId = req.params.questionId;
   const questions = await questionsModel.list(questionId, true);
   res.send({ data: questions });
