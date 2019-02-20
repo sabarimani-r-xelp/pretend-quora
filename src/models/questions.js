@@ -1,6 +1,5 @@
 import { sequelize } from "../db/Sequelize";
 import db from "../schema/index";
-import answers from "./answers";
 
 class questionsModel {
   list = (id, isAnswer = false) => {
