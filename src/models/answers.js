@@ -1,5 +1,5 @@
 import { sequelize } from "../db/Sequelize";
-import { answers as answersSchema } from "../schema/answers";
+import db from "../schema/index";
 
 class answersModel {
   list = (questionId, answerId = null) => {
@@ -8,22 +8,22 @@ class answersModel {
       if (questionId) queryConditions.push({ question_id: questionId });
       if (answerId) queryConditions.push({ id: answerId });
 
-      return answersSchema
+      return db.answers
         .findAll({
           raw: true,
           attributes: [
             "id",
             "answer",
-            "createdAt",
+            "created_at",
             [
               sequelize.literal(
-                "(select first_name FROM users WHERE id = userid)"
+                "(select first_name FROM users WHERE id = answered_by)"
               ),
               "answeredBy"
             ]
           ],
           where: queryConditions,
-          order: [["createdAt", "desc"]]
+          order: [["created_at", "desc"]]
         })
         .then(rows => {
           return rows;
@@ -35,11 +35,11 @@ class answersModel {
 
   create = (answer, userId, questionId) => {
     try {
-      return answersSchema
+      return db.answers
         .create({
           question_id: questionId,
           answer: answer,
-          userid: userId
+          answered_by: userId
         })
         .then(result => {
           return result;
@@ -51,20 +51,22 @@ class answersModel {
 
   update = (answer, userId, questionId, answerId) => {
     try {
-      return Answers.update(
-        {
-          question_id: questionId,
-          answer: answer,
-          userid: userId
-        },
-        {
-          where: {
-            id: answerId
+      return db.answers
+        .update(
+          {
+            question_id: questionId,
+            answer: answer,
+            answered_by: userId
+          },
+          {
+            where: {
+              id: answerId
+            }
           }
-        }
-      ).then(result => {
-        return result;
-      });
+        )
+        .then(result => {
+          return result;
+        });
     } catch (error) {
       throw error;
     }

@@ -1,30 +1,50 @@
 import { sequelize } from "../db/Sequelize";
-import { questions as Questions } from "../schema/questions";
+import db from "../schema/index";
+import answers from "./answers";
 
 class questionsModel {
-  list = id => {
+  list = (id, isAnswer = false) => {
     try {
       let queryConditions = [{ isActive: true }];
       if (id) queryConditions.push({ id: id });
 
-      return Questions.findAll({
-        raw: true,
-        where: queryConditions,
-        attributes: [
-          "id",
-          "question",
-          [
-            sequelize.literal(
-              "(select first_name FROM users WHERE id = userid)"
-            ),
-            "askedBy"
+      return db.questions
+        .findAll({
+          where: queryConditions,
+          include: [
+            {
+              model: db.answers,
+              attributes: isAnswer
+                ? [
+                    "id",
+                    "answer",
+                    "created_at",
+                    [
+                      sequelize.literal(
+                        "(select first_name FROM users WHERE id = answered_by)"
+                      ),
+                      "answeredBy"
+                    ]
+                  ]
+                : []
+            }
           ],
-          "createdAt"
-        ],
-        order: [["createdAt", "DESC"]]
-      }).then(question => {
-        return question;
-      });
+          attributes: [
+            "id",
+            "question",
+            [
+              sequelize.literal(
+                "(select first_name FROM users WHERE id = asked_by)"
+              ),
+              "askedBy"
+            ],
+            "created_at"
+          ],
+          order: [["created_at", "DESC"]]
+        })
+        .then(question => {
+          return question;
+        });
     } catch (error) {
       throw error;
     }
@@ -32,12 +52,14 @@ class questionsModel {
 
   create = (question, userid) => {
     try {
-      return Questions.create({
-        question: question,
-        userid: userid
-      }).then(result => {
-        return result;
-      });
+      return db.questions
+        .create({
+          question: question,
+          asked_by: userid
+        })
+        .then(result => {
+          return result;
+        });
     } catch (error) {
       throw error;
     }
@@ -45,17 +67,19 @@ class questionsModel {
 
   update = (question, userid, id) => {
     try {
-      return Questions.update(
-        {
-          question: question,
-          userid: userid
-        },
-        {
-          id: id
-        }
-      ).then(result => {
-        return result;
-      });
+      return db.questions
+        .update(
+          {
+            question: question,
+            asked_by: userid
+          },
+          {
+            id: id
+          }
+        )
+        .then(result => {
+          return result;
+        });
     } catch (error) {
       throw error;
     }
