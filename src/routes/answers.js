@@ -4,7 +4,7 @@ import answersModel from "../models/answers";
 export const create = route(
   async (req, res) => {
     const questionId = req.params.questionId;
-    const { answer, userId } = req.body.length ? req.body : req.query;
+    const { answer, userId } = req.body ;
     const newAnswer = await answersModel.create(answer, userId, questionId);
     res.send({ data: newAnswer });
   },

@@ -38,8 +38,8 @@ class questionsModel {
               "askedBy"
             ],
             "created_at"
-          ],
-          order: [["created_at", "DESC"]]
+          ]
+          // order: [["created_at", "DESC"]]
         })
         .then(question => {
           return question;
@@ -51,6 +51,8 @@ class questionsModel {
 
   create = (question, userid) => {
     try {
+      console.log(question,userid);
+      
       return db.questions
         .create({
           question: question,
