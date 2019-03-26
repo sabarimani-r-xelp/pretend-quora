@@ -7,4 +7,7 @@ const db = [];
 db.answers = answers;
 db.questions = questions;
 
+// questions.sync()
+// answers.sync()
+
 export default db;

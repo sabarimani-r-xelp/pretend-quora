@@ -3,8 +3,10 @@ import questionsModel from "../models/questions";
 
 export const create = route(
   async (req, res) => {
-    const { question, userId } = req.body.length ? req.body : req.query,
-      newQuestion = await questionsModel.create(question, userId);
+    const { question, userId } = req.body;
+    
+    console.log(question,userId);
+      const newQuestion = await questionsModel.create(question, userId);
     res.send({ data: newQuestion });
   },
   {

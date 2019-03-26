@@ -30,7 +30,7 @@ export function route(callback, options = {}) {
       if (options.requiredFields) {
         assertRequiredFields(
           options.requiredFields,
-          req.body.length ? req.body : req.query
+          req.body
         );
       }
 

@@ -35,6 +35,7 @@ class answersModel {
 
   create = (answer, userId, questionId) => {
     try {
+      console.log("***************************************************************************",answer, userId, questionId)
       return db.answers
         .create({
           question_id: questionId,
@@ -42,6 +43,7 @@ class answersModel {
           answered_by: userId
         })
         .then(result => {
+          console.log("########################################################################",result)
           return result;
         });
     } catch (error) {
